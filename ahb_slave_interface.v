@@ -1,38 +1,33 @@
-module ahb_slave_interface(input hclk,hresetn,hwrite,hready_in,
-input [1:0]htrans,input [31:0]hwdata,haddr,pr_data,
+module ahb_slave_interface(
+input hclk,hresetn,hwrite,hready_in,
+input [1:0]htrans,
+input [31:0]hwdata,haddr,pr_data,
 output reg hwrite_reg,hwrite_reg1,valid,
-output reg [31:0]hwdata_1,hwdata_2,haddr_1,haddr_2,
-output [31:1]hr_data,output reg [2:0]temp_sel);
-
-
+output reg [31:0]hwdata1,hwdata2,haddr1,haddr2,
+output [31:0] hr_data,
+output reg [2:0]temp_sel);
 always@(posedge hclk)
 begin
 if(!hresetn)
-begin
-haddr_1<=0;
-haddr_2<=0;
+begin haddr1<=0;
+haddr2<=0;
 end
 else
 begin
-haddr_1<=haddr;
-haddr_2<=haddr_1;
+haddr1<=haddr;
+haddr2<=haddr1;
 end
 end
-
 always@(posedge hclk)
 begin
 if(!hresetn)
-begin
-hwdata_1<=0;
-hwdata_2<=0;
+begin hwdata1<=0;
+hwdata2<=0;
 end
 else
 begin
-hwdata_1<=hwdata;
-hwdata_2<=hwdata_1;
+hwdata1<=hwdata; hwdata2<=hwdata1; end
 end
-end
-
 always@(posedge hclk)
 begin
 if(!hresetn)
@@ -46,30 +41,19 @@ hwrite_reg<=hwrite;
 hwrite_reg1<=hwrite_reg;
 end
 end
-
 always@(*)
 begin
-if (hready_in== 1 && haddr >= 32'h3000_0000 && haddr <32'h8c00_0000 &&htrans ==2'b10 || htrans ==2'b11)
-
+if(hready_in==1 && haddr >=32'h8000_0000 && haddr <32'h8c00_0000 && htrans ==2'b10 || htrans ==2'b11)
 valid=1;
 else
 valid=0;
 end
-
 always@(*)
 begin
-if(haddr >= 32'h8000_0000 && haddr <32'h8400_0000)
-temp_sel=3'b001;
-else if(haddr >= 32'h8400_0000 && haddr <32'h8800_0000)
-temp_sel=3'b010;
-else if(haddr >= 32'h8800_0000 && haddr <32'h8c00_0000)
-temp_sel=3'b100;
+if(haddr >=32'h8000_0000 && haddr <32'h8400_0000) temp_sel=3'b001;
+else if (haddr >=32'h8400_0000 && haddr <32'h8800_0000) temp_sel=3'b010;
+else if (haddr >=32'h8800_0000 && haddr <32'h8c00_0000) temp_sel=3'b100;
+temp_sel=0;
 end
-
-assign hr_data= pr_data;
-
+assign hr_data=pr_data;
 endmodule
-
-
-
-
