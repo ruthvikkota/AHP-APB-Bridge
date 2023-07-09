@@ -34,9 +34,10 @@ endtask
 initial
 begin
 reset;
-AHB.single_write();
-//AHB.single_read();
-//AHB.burst_4_incr_write();
+//ahb.single_write();
+//ahb.single_read();
+//ahb.burst_4_incr_write();
+ahb.burst_incr4_read();
 
 end
 endmodule
